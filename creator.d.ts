@@ -8687,6 +8687,19 @@ declare namespace cc {
 	<br/>
 	注意：不允许使用组件的子类构造参数，因为组件是由引擎创建的。 */
 	export class Component extends Object {		
+		protected onChange(): void
+
+		getNonNullComponent<T extends Component>(type: ClassType<T> | string): T
+
+		getPossibleComponent<T extends Component>(...types: ClassType<T>[] | string[]): T
+		
+		getComponentInParents<T extends Component>(type: ClassType<T> | string): T;
+
+		getRootNode(): Node;
+
+		findComponent<T extends Component>(type: ClassType<T> | string): T
+		countComponent<T extends Component>(type: ClassType<T> | string, count_type: CountComponentType): number
+
 		/** !#en The node this component is attached to. A component is always attached to a node.
 		!#zh 该组件被附加到的节点。组件总会附加到一个节点。 */
 		node: Node;		
@@ -11971,25 +11984,78 @@ declare namespace cc {
 		*/
 		static transformObb(out_bl: Vec2, out_tl: Vec2, out_tr: Vec2, out_br: Vec2, rect: Rect, anAffineTransform: AffineTransform): void;	
 	}	
-	/** A base node for CCNode, it will:
-	- maintain scene hierarchy and active logic
-	- notifications if some properties changed
-	- define some interfaces shares between CCNode
-	- define machanisms for Enity Component Systems
-	- define prefab and serialize functions */
+	/**
+	 * | A Base node for CCNode.
+	 * | Its missios are:
+	 * | - Maintain scene hierarchy and active logic.
+	 * | - Notifications if some properties changed.
+	 * | - Define some interfaces shares between CCNode.
+	 * | - Define machanisms for Enity Component Systems.
+	 * | - Define prefab and serialize functions.
+	 */
 	export class _BaseNode extends Object implements EventTarget {		
-		/** !#en Name of node.
-		!#zh 该节点名称。 */
+
+		findComponent<T extends Component>(type: ClassType<T> | string): T
+
+
+		/**
+		 * | Returns the component of supplied type if the node has one attached,
+		 * | or adds a new one for the node if none exists.
+		 *
+		 * @param type The supplied type of the Component
+		 *
+		 * @returns The reference of the component
+		 */
+		getNonNullComponent<T extends Component>(type: ClassType<T> | string): T
+
+		/**
+		 * | Counts how many components of a specified type are attached to this node or its related nodes.
+		 *
+		 * @param type The type or class of the component to count.
+		 *             Can be either a class type extending `Component` or a string representing the component type.
+		 * @param count_type Specifies the scope of the component count:
+		 *                  - `CountComponentType.Children`: Counts components in this node and all its children.
+		 *                  - `CountComponentType.Parents`: Counts components in this node and all its ancestors up to the scene root.
+		 *                  - `CountComponentType.Both`: Counts components in this node and all its children. Equals `cc.director.getScene().countComponent(type, CountComponentType.Children)`.
+		 * @returns The total number of components found matching the specified type and scope.
+		 */
+		countComponent<T extends Component>(type: ClassType<T> | string, count_type: CountComponentType = CountComponentType.Children): number
+
+		/**
+		 * | Retrieves the top-most non-scene node that contains this node or its parent nodes..
+		 *
+		 * @returns The root node contains this node's parents or itself.
+		 */
+		getRootNode(): Node;
+
+		/**
+		 * 
+		 *
+		 */
+		getPossibleComponent<T extends Component>(...types: ClassType<T>[] | string[]);
+		getComponentInParents<T extends Component>(type: ClassType<T> | string): T;
+
+		/**
+		 * | Name of the node
+		 */
 		name: string;		
-		/** !#en The uuid for editor, will be stripped before building project.
-		!#zh 主要用于编辑器的 uuid，在编辑器下可用于持久化存储，在项目构建之后将变成自增的 id。 */
+
+		/**
+		 * | The uuid for Editor.
+		 * | Should be stripped before building project.
+		 */
 		uuid: string;		
-		/** !#en All children nodes.
-		!#zh 节点的所有子节点。 */
+
+		/**
+		 * | The array contain all the chidren nodes
+		 */
 		children: Node[];		
-		/** !#en All children nodes.
-		!#zh 节点的子节点数量。 */
+
+		/**
+		 * | How many children this node is carrying.
+		 */
 		childrenCount: number;		
+
 		/** !#en
 		The local active state of this node.<br/>
 		Note that a Node may be inactive because a parent is not active, even if this returns true.<br/>
@@ -12215,7 +12281,7 @@ declare namespace cc {
 		var test = node.getComponent("Test");
 		``` 
 		*/
-		getComponent<T extends Component>(type: {prototype: T}): T;
+		getComponent<T extends Component>( type: ClassType<T> ): T;
 		getComponent(className: string): any;		
 		/**
 		!#en Returns all components of supplied type in the node.

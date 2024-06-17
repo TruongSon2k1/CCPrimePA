@@ -1,2 +1,5 @@
-# hello-world
-Hello world new project template.
+
+# A Cocos Creator Gamebase
+
+- Author: pTSern
+

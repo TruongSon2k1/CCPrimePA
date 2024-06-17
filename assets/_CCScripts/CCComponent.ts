@@ -1,5 +1,6 @@
 
 
+//@ts-ignore
 cc.Component.prototype.onChange = null;
 
 //@ts-ignore
