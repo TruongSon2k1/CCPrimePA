@@ -47,6 +47,14 @@ declare namespace cc {
 
 
 	/**
+	 * | Find the first supplied component exist in the current running scene
+	 * | Equals to `cc.director.getScene().getComponentInChildren(type)`
+	 *
+	 * @param type The supplied component or its name.
+	 */
+	export function findComponent<T extends Component>(type: ClassType<T> | string): T
+
+	/**
 	 * @description
 	 * | Outputs an error message to the Cocos Creator Console (editor) or Web Console (runtime).
 	 * | - In Cocos Creator, error is red.
@@ -11995,9 +12003,6 @@ declare namespace cc {
 	 */
 	export class _BaseNode extends Object implements EventTarget {		
 
-		findComponent<T extends Component>(type: ClassType<T> | string): T
-
-
 		/**
 		 * | Returns the component of supplied type if the node has one attached,
 		 * | or adds a new one for the node if none exists.
@@ -12029,10 +12034,34 @@ declare namespace cc {
 		getRootNode(): Node;
 
 		/**
-		 * 
+		 * | Retrieves a component from the supplied component list based on the provided types.
+		 *
+		 * | This generic function accepts a variable number of arguments, each being either a 
+		 * | class type (ClassType<T>) or a string. The function attempts to match and return 
+		 * | a component that matches one of the specified types.
+		 *
+		 * @template T - The type of the component being retrieved. This should extend from the base Component class.
+		 *
+		 * @param {...(ClassType<T> | string)[]} types - A rest parameter that takes multiple arguments, 
+		 * each being either a class type of the component or a string representing the component type.
+		 *
+		 * @returns {T | undefined} - Returns the matched component of type T if found, otherwise returns undefined.
+		 *
+		 * Example usage:
+		 * ```
+		 * const myComponent = getPossibleComponent(MyComponentClass, 'MyComponentName');
+		 * if (myComponent) {
+		 *   // Do something with myComponent
+		 * }
+		 * ```
+		 */
+		getPossibleComponent<T extends Component>(...types: ClassType<T>[] | string[]): T | null
+
+
+		/**
+		 * | Retieves a component from its parent
 		 *
 		 */
-		getPossibleComponent<T extends Component>(...types: ClassType<T>[] | string[]);
 		getComponentInParents<T extends Component>(type: ClassType<T> | string): T;
 
 		/**
@@ -12307,7 +12336,7 @@ declare namespace cc {
 		var Test = node.getComponentInChildren("Test");
 		``` 
 		*/
-		getComponentInChildren<T extends Component>(type: {prototype: T}): T;
+		getComponentInChildren<T extends Component>(type: ClassType<T> | string): T;
 		getComponentInChildren(className: string): any;		
 		/**
 		!#en Returns all components of supplied type in self or any of its children.
