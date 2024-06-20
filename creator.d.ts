@@ -8695,6 +8695,10 @@ declare namespace cc {
 	<br/>
 	注意：不允许使用组件的子类构造参数，因为组件是由引擎创建的。 */
 	export class Component extends Object {		
+		/**
+		 * | Executed every time an builin properties is changed
+		 *
+		 */
 		protected onChange(): void
 
 		getNonNullComponent<T extends Component>(type: ClassType<T> | string): T
@@ -12067,7 +12071,7 @@ declare namespace cc {
 		/**
 		 * | Name of the node
 		 */
-		name: string;		
+		name: string;
 
 		/**
 		 * | The uuid for Editor.
