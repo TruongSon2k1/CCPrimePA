@@ -8701,6 +8701,15 @@ declare namespace cc {
 		 */
 		protected onChange(): void
 
+		/**
+		 * | Returns the component of supplied type if the node has one attached,
+		 * | or adds a new one for the node if none exists.
+		 * | Equals to `cc.Node.prototype.getNonNullComponent`
+		 *
+		 * @param type The supplied type of the Component
+		 *
+		 * @returns The reference of the component
+		 */
 		getNonNullComponent<T extends Component>(type: ClassType<T> | string): T
 
 		getPossibleComponent<T extends Component>(...types: ClassType<T>[] | string[]): T
