@@ -54,6 +54,9 @@ declare namespace cc {
 	 */
 	export function findComponent<T extends Component>(type: ClassType<T> | string): T
 
+	export function instance<T>(obj: ClassType<T>): T | null;
+	export function IST<T>(obj: ClassType<T>): T | null
+
 	/**
 	 * @description
 	 * | Outputs an error message to the Cocos Creator Console (editor) or Web Console (runtime).
@@ -4100,6 +4103,27 @@ declare namespace cc {
 		*/
 		update(dt: number): void;	
 	}	
+
+	declare type TweenEasing = 'quadIn' 		| 'quadOut'  		| 'quadInOut'  		|
+														 'cubicIn'		| 'cubicOut' 		| 'cubicInOut' 		|
+														 'quartIn'		| 'quartOut' 		| 'quartInOut' 		|
+														 'quintIn'		| 'quintOut' 		| 'quintInOut' 		|
+														 'sineIn' 		| 'sineOut'  		| 'sineInOut'  		|
+														 'expoIn' 		| 'expoOut'  		| 'expoInOut'  		|
+														 'circIn' 		| 'circOut'  		| 'circInOut'  		|
+														 'elasticIn' 	| 'elasticOut' 	| 'elasticInOut' 	|
+														 'backIn' 		| 'backOut' 		| 'backInOut' 		|
+														 'bounceIn' 	| 'bounceOut' 	| 'bounceInOut' 	|
+														 'smooth' 		| 'fade' 				| 'linear'
+
+	declare export interface ITweenOptions<T> {
+		easing?: TweenEasing | ((t: number) => number);
+		progress?: ((start: number, end: number, current: number, ratio: number) => number) |
+							 ((start: Vec3, end: Vec3, current: Vec3, ratio: number) => Vec3) |
+							 ((start: Vec2, end: Vec2, current: Vec2, ratio: number) => Vec2)
+		onUpdate?: (target: T, dt: number) => void
+	}
+
 	/** !#en
 	Tween provide a simple and flexible way to create action. Tween's api is more flexible than `cc.Action`:
 	 - Support creating an action sequence in chained api.
@@ -4113,6 +4137,9 @@ declare namespace cc {
 	 - 支持与 `cc.Action` 混用。
 	 - 支持设置 {{#crossLink "Easing"}}{{/crossLink}} 或者 progress 函数。 */
 	export class Tween<T = any> {		
+
+		static easingList: TweenEasing[];
+
 		/**
 		
 		@param target target 
@@ -4135,6 +4162,13 @@ declare namespace cc {
 		@param target target 
 		*/
 		static stopAllByTarget(target: any): void;		
+
+		/**
+		 * | Get the roor target of this tween
+		 *
+		 */
+		getTarget(): T;
+
 		/**
 		!#en
 		Insert an action or tween to this sequence
@@ -4222,6 +4256,7 @@ declare namespace cc {
 		@param opts opts 
 		*/
 		blink(duration: number, times: number, opts?: {progress?: Function; easing?: Function|string; }): Tween<T>;		
+
 		/**
 		!#en
 		Add an action which calculate with absolute value
@@ -4231,7 +4266,7 @@ declare namespace cc {
 		@param props {scale: 2, position: cc.v3(100, 100, 100)}
 		@param opts opts 
 		*/
-		to<OPTS extends Partial<{ progress: Function, easing: Function | String, onUpdate: Function }>>(duration: number, props: ConstructorType<T>, opts?: OPTS): Tween<T>;		
+		to(duration: number, props: ConstructorType<T>, opts?: ITweenOptions<T>): Tween<T>
 		/**
 		!#en
 		Add an action which calculate with relative value
@@ -4241,7 +4276,8 @@ declare namespace cc {
 		@param props {scale: 2, position: cc.v3(100, 100, 100)}
 		@param opts opts 
 		*/
-		by<OPTS extends Partial<{ progress: Function, easing: Function | String, onUpdate: Function }>>(duration: number, props: ConstructorType<T>, opts?: OPTS): Tween<T>;		
+		by(duration: number, props: ConstructorType<T>, opts?: ITweenOptions<T>): Tween<T>
+		
 		/**
 		!#en
 		Directly set target properties
@@ -8696,7 +8732,7 @@ declare namespace cc {
 	注意：不允许使用组件的子类构造参数，因为组件是由引擎创建的。 */
 	export class Component extends Object {		
 		/**
-		 * | Executed every time an builin properties is changed
+		 * | Executed every time a builin properties is changed
 		 *
 		 */
 		protected onChange(): void
@@ -8704,7 +8740,6 @@ declare namespace cc {
 		/**
 		 * | Returns the component of supplied type if the node has one attached,
 		 * | or adds a new one for the node if none exists.
-		 * | Equals to `cc.Node.prototype.getNonNullComponent`
 		 *
 		 * @param type The supplied type of the Component
 		 *
@@ -8712,14 +8747,56 @@ declare namespace cc {
 		 */
 		getNonNullComponent<T extends Component>(type: ClassType<T> | string): T
 
-		getPossibleComponent<T extends Component>(...types: ClassType<T>[] | string[]): T
-		
-		getComponentInParents<T extends Component>(type: ClassType<T> | string): T;
+		/**
+		 * | Counts how many components of a specified type are attached to this node or its related nodes.
+		 *
+		 * @param type The type or class of the component to count.
+		 *             Can be either a class type extending `Component` or a string representing the component type.
+		 * @param count_type Specifies the scope of the component count:
+		 *                  - `CountComponentType.Children`: Counts components in this node and all its children.
+		 *                  - `CountComponentType.Parents`: Counts components in this node and all its ancestors up to the scene root.
+		 *                  - `CountComponentType.Both`: Counts components in this node and all its children. Equals `cc.director.getScene().countComponent(type, CountComponentType.Children)`.
+		 * @returns The total number of components found matching the specified type and scope.
+		 */
+		countComponent<T extends Component>(type: ClassType<T> | string, count_type: CountComponentType = CountComponentType.Children): number
 
+		/**
+		 * | Retrieves the top-most non-scene node that contains this node or its parent nodes..
+		 *
+		 * @returns The root node contains this node's parents or itself.
+		 */
 		getRootNode(): Node;
 
-		findComponent<T extends Component>(type: ClassType<T> | string): T
-		countComponent<T extends Component>(type: ClassType<T> | string, count_type: CountComponentType): number
+		/**
+		 * | Retrieves a component from the supplied component list based on the provided types.
+		 *
+		 * | This generic function accepts a variable number of arguments, each being either a 
+		 * | class type (ClassType<T>) or a string. The function attempts to match and return 
+		 * | a component that matches one of the specified types.
+		 *
+		 * @template T - The type of the component being retrieved. This should extend from the base Component class.
+		 *
+		 * @param {...(ClassType<T> | string)[]} types - A rest parameter that takes multiple arguments, 
+		 * each being either a class type of the component or a string representing the component type.
+		 *
+		 * @returns {T | undefined} - Returns the matched component of type T if found, otherwise returns undefined.
+		 *
+		 * Example usage:
+		 * ```
+		 * const myComponent = getPossibleComponent(MyComponentClass, 'MyComponentName');
+		 * if (myComponent) {
+		 *   // Do something with myComponent
+		 * }
+		 * ```
+		 */
+		getPossibleComponent<T extends Component>(...types: ClassType<T>[] | string[]): T | null
+
+
+		/**
+		 * | Retieves a component from its parent
+		 *
+		 */
+		getComponentInParents<T extends Component>(type: ClassType<T> | string): T;
 
 		/** !#en The node this component is attached to. A component is always attached to a node.
 		!#zh 该组件被附加到的节点。组件总会附加到一个节点。 */
@@ -22610,6 +22687,11 @@ declare namespace cc._decorator {
 /** !#en This module provides some JavaScript utilities. All members can be accessed with `cc.js`.
 !#zh 这个模块封装了 JavaScript 相关的一些实用函数，你可以通过 `cc.js` 来访问这个模块。 */
 declare namespace cc.js {	
+
+	export function isObject(obj: any): obj is object;
+	export function isBoolean(obj: any): obj is boolean;
+	export function getTemplateType<T>(ctor: ClassConstructorType<T>): "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";
+
 	/**
 	Check the obj whether is number or not
 	If a number is created by using 'new Number(10086)', the typeof it will be "object"...

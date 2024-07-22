@@ -4,3 +4,8 @@ cc.findComponent = function<T extends cc.Component>(type: cc.ClassType<T> | stri
     return cc.director.getScene().getComponentInChildren(type)
 }
 
+cc.IST = cc.instance = function<T>(obj: cc.ClassType<T>): T | null
+{
+    return obj['__get_pts_instance__']()
+}
+
