@@ -1,16 +1,20 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/2.4/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/2.4/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/2.4/manual/en/scripting/life-cycle-callbacks.html
-
 const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class TestTween extends cc.Component {
 
-    protected onLoad(): void {
+    @property()
+    get x() { return false }
+    set x(v) {
+        if(v) {
+            const k = Object.keys(Editor)
+            const v = Object.values(Editor)
+            for(let i = 0; i < v.length; i ++) {
+                cc.log(k[i], ">>", v[i].toString(), "\n")
+            }
 
+        }
     }
+
+
 }

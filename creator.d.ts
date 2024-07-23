@@ -1,6 +1,5 @@
 
 /**
- * @description
  * | The main namespace of Cocos2d-JS, all engine core classes, functions, properties and constants are defined in this namespace.
  * |
  * | This is a moded by pTSern
@@ -9,7 +8,6 @@
 declare namespace cc {
 
 	/**
-	 * @description
 	 * | The current version of Cocos2d being used.
 	 * | Please DO NOT remove this String, it is an important flag for bug tracking.
 	 * | If you post a bug to forum, please attach this flag.
@@ -18,7 +16,6 @@ declare namespace cc {
 	export var ENGINE_VERSION: string;
 
 	/**
-	 * @description
 	 * | Declare a class type.
 	 * | Force input to be a specific class.
 	 * |
@@ -32,6 +29,8 @@ declare namespace cc {
 	 */
 	declare type ClassType<T> = { prototype: T }
 
+	declare type TargetPosition = cc.Vec2 
+
 	declare enum CountComponentType {
 		Children,
 		Parents,
@@ -39,8 +38,7 @@ declare namespace cc {
 	}
 
 	/**
-	 * @description
-	 * |
+	 * | Syntax type for the Class
 	 *
 	 */
 	declare type ClassConstructorType<T = {}> = new (...args: any[]) => T
@@ -54,11 +52,21 @@ declare namespace cc {
 	 */
 	export function findComponent<T extends Component>(type: ClassType<T> | string): T
 
+	/**
+	 * | Get the instance of a Singleton class which marked by `@mark_singleton`
+	 * | Equal to `cc.IST`
+	 *
+	 */
 	export function instance<T>(obj: ClassType<T>): T | null;
+
+	/**
+	 * | Get the instance of a Singleton class which marked by `@mark_singleton`
+	 * | Equal to `cc.instance`
+	 *
+	 */
 	export function IST<T>(obj: ClassType<T>): T | null
 
 	/**
-	 * @description
 	 * | Outputs an error message to the Cocos Creator Console (editor) or Web Console (runtime).
 	 * | - In Cocos Creator, error is red.
 	 * | - In Chrome, error have a red icon along with red message text.
@@ -70,7 +78,6 @@ declare namespace cc {
 	export function error(msg: any, ...subst: any[]): void;	
 
 	/**
-	 * @description
 	 * | Outputs a warning message to the Cocos Creator Console (editor) or Web Console (runtime).
 	 * | - In Cocos Creator, warning is yellow.
 	 * | - In Chrome, warning have a yellow warning icon with the message text.
@@ -82,7 +89,6 @@ declare namespace cc {
 	export function warn(msg: any, ...subst: any[]): void;	
 
 	/**
-	 * @description
 	 * | Outputs a message to the Cocos Creator Console (editor) or Web Console (runtime).
 	 * |
 	 *
@@ -92,25 +98,22 @@ declare namespace cc {
 	export function log(msg: string|any, ...subst: any[]): void;	
 
 	/**
-	 * @description
 	 * | The main Director.
 	 * | Singleton value.
 	 * |
 	 */
-	export var director: Director;	
+	export const director: Director;
 	/** !#en This is a Game instance.
 	!#zh 这是一个 Game 类的实例，包含游戏主体信息并负责驱动游戏的游戏对象。。 */
 	
 	/**
-	 * @description
 	 * | The main Game controlling html canvas.
 	 * | Singleton value.
 	 * |
 	 */
-	export var game: Game;	
+	export const game: Game;
 
 	/**
-	 * @description
 	 * | Points setter
 	 * |
 	 *
@@ -119,8 +122,8 @@ declare namespace cc {
 	export function setPoints(points: any[]): void;	
 
 	/**
-	 * @description
 	 * | Creates an action with a Cardinal Spline array of points and tension.
+	 * |
 	 *
 	 * @param duration The duration value
 	 * @param points The array of control points
@@ -13708,6 +13711,7 @@ declare namespace cc {
 		*/
 		toString(): string;	
 	}	
+
 	/** !#en The base class of all value types.
 	!#zh 所有值类型的基类。 */
 	export class ValueType {		
@@ -13749,7 +13753,7 @@ declare namespace cc {
 	}	
 	/** !#en Representation of 2D vectors and points.
 	!#zh 表示 2D 向量和坐标 */
-	export class Vec2 extends ValueType {		
+	export class Vec2 extends ValueType implements IVec2Like {		
 		/**
 		!#en Returns the length of this vector.
 		!#zh 返回该向量的长度。
@@ -14326,7 +14330,7 @@ declare namespace cc {
 	}	
 	/** !#en Representation of 3D vectors and points.
 	!#zh 表示 3D 向量和坐标 */
-	export class Vec3 extends ValueType {		
+	export class Vec3 extends ValueType implements IVec3Like {		
 		/**
 		!#en Returns the length of this vector.
 		!#zh 返回该向量的长度。
@@ -23071,7 +23075,7 @@ declare let cc: {
     [x: string]: any;
 }
 
-declare let Editor: any;
+
 
 // https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c
 type FlagExcludedType<Base, Type> = { [Key in keyof Base]: Base[Key] extends Type ? never : Key };
@@ -23098,7 +23102,6 @@ declare interface Object {
     assign(target: {}, source: {});
 }
 
-
 type FloatArray = Float64Array | Float32Array;
 
 interface IColorLike {
@@ -23118,16 +23121,7 @@ interface IMat4Like {
     m: FloatArray
 }
 
-interface IQuatLike {
-    x: number;
-    y: number;
-    z: number;
-    w: number;
-}
-
-interface IRectLike {
-    x: number;
-    y: number;
+interface IRectLike extends IVec2Like {
     width: number;
     height: number;
 }
@@ -23142,18 +23136,17 @@ interface IVec2Like {
     y: number;
 }
 
-interface IVec3Like {
-    x: number;
-    y: number;
+interface IVec3Like extends IVec2Like {
     z: number;
 }
 
-interface IVec4Like {
-    x: number;
-    y: number;
-    z: number;
+interface IVec4Like extends IVec3Like {
     w: number;
 }
+
+interface IQuatLike extends IVec4Like {
+}
+
 declare namespace dragonBones {
     /**
      * @internal
