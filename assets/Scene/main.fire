@@ -296,7 +296,7 @@
     "_id": "58aozpaYJMuaUiNm1hNg9m"
   },
   {
-    "__type__": "cc.Sprite",
+    "__type__": "cc.MeshRenderer",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -305,37 +305,57 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+        "__uuid__": "2a296057-247c-4a1c-bbeb-0548b6c98650"
       }
     ],
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
-    "_spriteFrame": {
-      "__uuid__": "a23235d1-15db-4b95-8439-a2e005bfff91"
-    },
-    "_type": 0,
-    "_sizeMode": 0,
-    "_fillType": 0,
-    "_fillCenter": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_fillStart": 0,
-    "_fillRange": 0,
-    "_isTrimmedMode": true,
-    "_atlas": null,
-    "_id": "cbFreztHRKFa5SfrLtrFBl"
+    "_mesh": null,
+    "_receiveShadows": false,
+    "_shadowCastingMode": 0,
+    "_enableAutoBatch": false,
+    "textures": [],
+    "_id": "1dXYz7ELJDtIyzLzqnoL8k"
   },
   {
-    "__type__": "bbd36MaTtxCzYsO9cmjlEwN",
+    "__type__": "1848eQg4AdL2ZwOWyXYDCTe",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 5
     },
     "_enabled": true,
-    "_id": "4dyOc/v8pDxI+X76wMIqaD"
+    "_offset_": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_sprite_frame_": null,
+    "_selecting_index_": 3,
+    "_remove_selecting_index_": false,
+    "_add_polygon_": false,
+    "_p_polygon_": null,
+    "_vertexes_": [
+      {
+        "__type__": "cc.Vec2",
+        "x": -165.1,
+        "y": -59.3
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 100
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 158.5,
+        "y": -69
+      }
+    ],
+    "_id": "78+8TB0LpGIK5rT0Jcj2Ha"
   },
   {
     "__type__": "cc.Canvas",
