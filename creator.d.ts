@@ -29,8 +29,6 @@ declare namespace cc {
 	 */
 	declare type ClassType<T> = { prototype: T }
 
-	declare type TargetPosition = cc.Vec2 
-
 	declare enum CountComponentType {
 		Children,
 		Parents,
@@ -2893,6 +2891,11 @@ declare namespace cc {
 		``` 
 		*/
 		getNumberOfRunningActions(): number;		
+
+		getWorldPosition(out: Vec2): Vec2
+		getWorldPosition(out: Vec3): Vec3
+		getWorldPosition(): Vec3
+
 		/**
 		!#en
 		Returns a copy of the position (x, y, z) of the node in its parent's coordinates.
@@ -2907,7 +2910,9 @@ declare namespace cc {
 		cc.log("Node Position: " + node.getPosition());
 		``` 
 		*/
-		getPosition(out?: Vec2|Vec3): Vec2;		
+		getPosition(out: Vec3): Vec3;
+		getPosition(out: Vec2): Vec2;
+		getPosition(): Vec3;
 		/**
 		!#en
 		Sets the position (x, y, z) of the node in its parent's coordinates.<br/>
@@ -2926,7 +2931,10 @@ declare namespace cc {
 		@param y Y coordinate for position
 		@param z Z coordinate for position 
 		*/
-		setPosition(x: Vec2|Vec3|number, y?: number, z?: number): void;		
+		setPosition(target: Node)
+		setPosition(x: number, y: number, z?: number)
+		setPosition(target: IVec2Like | IVec3Like, is_world_pos?: boolean)
+
 		/**
 		!#en
 		Returns the scale factor of the node.
@@ -2962,7 +2970,8 @@ declare namespace cc {
 		node.setScale(2);
 		``` 
 		*/
-		setScale(x: number|Vec2|Vec3, y?: number, z?: number): void;		
+		setScale(x: number, y: number, z?: number): void
+		setScale(target: IVec2Like | IVec3Like): void
 		/**
 		!#en
 		Get rotation of node (in quaternion).
@@ -2980,7 +2989,8 @@ declare namespace cc {
 		@param z z value of quternion
 		@param w w value of quternion 
 		*/
-		setRotation(quat: Quat|number, y?: number, z?: number, w?: number): void;		
+		setRotation(x: number, y: number, z: number, w: number): void
+		setRotation(quat: Quat): void;		
 		/**
 		!#en
 		Returns a copy the untransformed size of the node. <br/>
@@ -12403,8 +12413,7 @@ declare namespace cc {
 		var test = node.getComponent("Test");
 		``` 
 		*/
-		getComponent<T extends Component>( type: ClassType<T> ): T;
-		getComponent(className: string): any;		
+		getComponent<T extends Component>( type: ClassType<T> | string): T;
 		/**
 		!#en Returns all components of supplied type in the node.
 		!#zh 返回节点上指定类型的所有组件。
@@ -12416,8 +12425,7 @@ declare namespace cc {
 		var tests = node.getComponents("Test");
 		``` 
 		*/
-		getComponents<T extends Component>(type: {prototype: T}): T[];
-		getComponents(className: string): any[];		
+		getComponents<T extends Component>(type: ClassType<T> | string): T[];
 		/**
 		!#en Returns the component of supplied type in any of its children using depth first search.
 		!#zh 递归查找所有子节点中第一个匹配指定类型的组件。
@@ -13754,6 +13762,7 @@ declare namespace cc {
 	/** !#en Representation of 2D vectors and points.
 	!#zh 表示 2D 向量和坐标 */
 	export class Vec2 extends ValueType implements IVec2Like {		
+
 		/**
 		!#en Returns the length of this vector.
 		!#zh 返回该向量的长度。
@@ -16691,18 +16700,18 @@ declare namespace cc {
 		applyLocalTorque(torque: IVec3Like): void;	
 	}	
 	/** Class has x y z properties */
-	export class IVec3Like {		
-		x: number;		
-		y: number;		
-		z: number;	
-	}	
-	/** Class has x y z w properties */
-	export class IQuatLike {		
-		x: number;		
-		y: number;		
-		z: number;		
-		w: number;	
-	}	
+	//export class IVec3Like {		
+	//	x: number;		
+	//	y: number;		
+	//	z: number;	
+	//}	
+	///** Class has x y z w properties */
+	//export class IQuatLike {		
+	//	x: number;		
+	//	y: number;		
+	//	z: number;		
+	//	w: number;	
+	//}	
 	/** !#en Base shape interface. */
 	export class IBaseShape {		
 		collider: Collider3D;		
@@ -23104,7 +23113,7 @@ declare interface Object {
 
 type FloatArray = Float64Array | Float32Array;
 
-interface IColorLike {
+declare interface IColorLike {
     r: number;
     g: number;
     b: number;
@@ -23113,38 +23122,38 @@ interface IColorLike {
 
 }
 
-interface IMat3Like {
+declare interface IMat3Like {
     m: FloatArray
 }
 
-interface IMat4Like {
+declare interface IMat4Like {
     m: FloatArray
 }
 
-interface IRectLike extends IVec2Like {
+declare interface IRectLike extends IVec2Like {
     width: number;
     height: number;
 }
 
-interface ISizeLike {
+declare interface ISizeLike {
     width: number;
     height: number;
 }
 
-interface IVec2Like {
+declare interface IVec2Like {
     x: number;
     y: number;
 }
 
-interface IVec3Like extends IVec2Like {
+declare interface IVec3Like extends IVec2Like {
     z: number;
 }
 
-interface IVec4Like extends IVec3Like {
+declare interface IVec4Like extends IVec3Like {
     w: number;
 }
 
-interface IQuatLike extends IVec4Like {
+declare interface IQuatLike extends IVec4Like {
 }
 
 declare namespace dragonBones {

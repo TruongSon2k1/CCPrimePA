@@ -1,20 +1,26 @@
 const {ccclass, property} = cc._decorator;
 
-@ccclass('X')
-class X extends Editor.Gizmo {
-    
-}
+
 
 @ccclass
 export default class TestTween extends cc.Component {
-    @property(X)
-    protected f: X = null
 
+    @property(cc.Node)
+    v: cc.Node = null
     @property()
-    get x() { return false }
-    set x(v) {
+    get s() { return false }
+    set s(v) {
         if(v) {
+            this.node.setPosition(this.v)
         }
+    }
+    private _node: cc.Node = null
+
+    protected onLoad(): void {
+        console.log(this.node.getWorldPosition().toString())
+        console.log(this.node.getWorldPosition(cc.v2()).toString())
+        console.log(this.node.getWorldPosition(cc.v3()).toString())
+
     }
 }
 

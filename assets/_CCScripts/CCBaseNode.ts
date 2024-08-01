@@ -51,3 +51,17 @@ cc._BaseNode.prototype.getPossibleComponent = function<T extends cc.Component>(.
     return null
 }
 
+cc._BaseNode.prototype.getComponentInParents = function<T extends cc.Component>(type: cc.ClassType<T> | string): T {
+    let comp: T = null;
+
+    let parent: cc.Node | cc.Scene = this._parent;
+
+    while(!!parent && !comp && !(parent instanceof cc.Scene)) {
+        comp = parent.getComponent(type);
+        //@ts-ignore
+        parent = parent._parent;
+    }
+
+    return comp;
+}
+
