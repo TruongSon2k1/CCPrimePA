@@ -1234,11 +1234,14 @@ declare namespace cc {
 	@param action action 
 	*/
 	export function targetedAction(target: Node, action: FiniteTimeAction): ActionInterval;	
+
+	declare type TweenType = 'Normal' | 'Prime'
+
 	/**
-	
-	@param target the target to animate 
-	*/
-	export function tween<T> (target?: T) : Tween<T>;	
+	 *
+	 * @param target the target to animate 
+	 */
+	export function tween<T> (target?: T, type: TweenType = 'Normal') : Tween<T>;	
 	/** !#en This is a Easing instance.
 	!#zh 这是一个 Easing 类实例。 */
 	export var easing: Easing;	
@@ -4381,6 +4384,10 @@ declare namespace cc {
 		*/
 		reverseTime(action?: Action|Tween<T>): Tween<T>;	
 	}	
+
+	export class PrimeTween<T = any> extends Tween<T> {
+
+	}
 	/** Class for particle asset handling. */
 	export class ParticleAsset extends Asset {	
 	}	
